@@ -1,0 +1,62 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recursive-dns
+  labels:
+    app: rdns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rdns
+  template:
+    metadata:
+      labels:
+        app: rdns
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: rdns
+              topologyKey: kubernetes.io/hostname
+      containers:
+      - name: coredns
+        image: quay.io/tidawson/rdns
+        ports:
+        - containerPort: 5353
+          protocol: TCP
+        - containerPort: 5353
+          protocol: UDP
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 256m
+            memory: 128Mi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: rdns
+spec:
+  selector:
+    app: rdns
+  sessionAffinity: "ClientIP"
+  ports:
+  - port: 53
+    targetPort: 5353
+    protocol: TCP
+    name: dns-tcp
+  - port: 53
+    targetPort: 5353
+    protocol: UDP
+    name: dns-udp
