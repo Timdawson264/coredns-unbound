@@ -1,0 +1,6 @@
+- op: replace
+  path: /spec/upstreamResolvers/upstreams/0
+  value:
+    type: Network
+    address: ${DNS_IP}
+    port: 53 
