@@ -40,6 +40,16 @@ spec:
           requests:
             cpu: 256m
             memory: 128Mi
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8181
+            scheme: HTTP
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
 
 ---
 

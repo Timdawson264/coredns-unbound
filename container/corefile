@@ -1,6 +1,12 @@
 . {
+    errors
+    health {
+        lameduck 30s
+    }
+    ready
+    prometheus :9153
     unbound
     cache
     log
+    
 }
-
